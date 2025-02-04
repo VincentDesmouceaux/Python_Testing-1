@@ -3,7 +3,9 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 from app.booking_manager import BookingManager
 
-app = Flask(__name__)
+# Indique que le dossier statique se trouve dans ../static (à la racine du projet)
+# Les templates seront recherchés par défaut dans "templates" situé dans ce même dossier (ici "app/templates")
+app = Flask(__name__, static_folder="../static")
 app.secret_key = "secret_key_xyz"
 
 # Instanciation du manager avec les chemins de fichiers en paramètre
@@ -33,7 +35,7 @@ def book(competition, club):
     found_competition = manager.find_competition_by_name(competition)
     found_club = manager.find_club_by_name(club)
     if not found_competition or not found_club:
-        flash("Something went wrong-please try again")
+        flash("Something went wrong - please try again")
         return redirect(url_for("index"))
     return render_template("booking.html", club=found_club, competition=found_competition)
 
@@ -43,7 +45,6 @@ def purchase_places():
     competition_name = request.form.get("competition")
     club_name = request.form.get("club")
     places_str = request.form.get("places")
-
     try:
         places_requested = int(places_str)
     except ValueError:
