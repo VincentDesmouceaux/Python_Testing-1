@@ -1,3 +1,5 @@
+# app/booking_manager/booking_service.py
+
 from app.booking_manager.club_manager import ClubManager
 from app.booking_manager.competition_manager import CompetitionManager
 
@@ -17,16 +19,18 @@ class BookingService:
 
         if not club or not competition:
             return False
-
         if places_requested > 12:
             return False
-
         if places_requested > club.points:
             return False
-
         if places_requested > competition.number_of_places:
             return False
 
         competition.number_of_places -= places_requested
         club.points -= places_requested
+
+        # Sauvegarde des modifications dans les fichiers JSON
+        self.club_manager.save_clubs()
+        self.competition_manager.save_competitions()
+
         return True

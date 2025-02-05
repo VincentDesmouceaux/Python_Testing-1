@@ -1,3 +1,5 @@
+# app/server.py
+
 from flask import Flask, render_template, request, redirect, flash, url_for
 from app.booking_manager import BookingService
 

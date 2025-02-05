@@ -14,8 +14,6 @@ class TestWelcomePage(unittest.TestCase):
             '/showSummary', data={'email': 'unknown@example.com'})
         self.assertEqual(response.status_code, 302,
                          "Doit rediriger pour un email inconnu.")
-
-        # Suivre la redirection pour vérifier l'absence d'erreur Jinja
         response_followed = self.client.post(
             '/showSummary', data={'email': 'unknown@example.com'}, follow_redirects=True)
         self.assertEqual(response_followed.status_code, 200,

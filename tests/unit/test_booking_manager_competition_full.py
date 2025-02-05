@@ -10,11 +10,10 @@ class TestBookingManagerCompetitionFull(unittest.TestCase):
             clubs_file="data/clubs.json", competitions_file="data/competitions.json")
 
     def test_purchase_places_competition_full(self):
-        # Forcer la compétition "Spring Festival" à n'avoir que 2 places disponibles
         competition = self.service.competition_manager.find_by_name(
             "Spring Festival")
         if competition:
-            competition.number_of_places = 2
+            competition.number_of_places = 2  # Forcer une compétition avec peu de places
         success = self.service.purchase_places(
             "Iron Temple", "Spring Festival", 3)
         self.assertFalse(

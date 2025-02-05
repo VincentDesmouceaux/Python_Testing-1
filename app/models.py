@@ -8,7 +8,8 @@ class Competition:
 
 
 class Club:
-    def __init__(self, name, email, points):
+    def __init__(self, name, email, points, id=None):
         self.name = name
         self.email = email
         self.points = points
+        self.id = id
