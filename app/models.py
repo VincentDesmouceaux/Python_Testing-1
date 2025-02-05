@@ -1,4 +1,5 @@
 # app/models.py
+
 class Competition:
     def __init__(self, name, date, number_of_places):
         self.name = name

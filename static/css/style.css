@@ -2,119 +2,118 @@
 
 /* Style global */
 body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #f8f8f8;
-    margin: 0;
-    padding: 0;
-    color: #333;
-  }
-  
-  /* Barre de navigation */
-  nav {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-  }
-  
-  nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-  }
-  
-  nav ul li {
-    margin-right: 15px;
-  }
-  
-  nav ul li a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  nav ul li a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Conteneur principal */
-  .container {
-    width: 90%;
-    max-width: 1000px;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-radius: 5px;
-  }
-  
-  /* Titres */
-  h1, h2, h3 {
-    color: #444;
-  }
-  
-  /* Formulaires */
-  form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  form input[type="email"],
-  form input[type="number"],
-  form input[type="text"] {
-    width: 100%;
-    max-width: 300px;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  form button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  form button:hover {
-    background-color: #555;
-  }
-  
-  /* Messages flash */
-  .flashes {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0;
-  }
-  
-  .flashes li {
-    background-color: #e74c3c;
-    color: #fff;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 5px;
-  }
-  
-  /* Tableaux */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  table th,
-  table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  table th {
-    background-color: #333;
-    color: #fff;
-  }
-  
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f8f8f8;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Barre de navigation */
+nav {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav ul li {
+  margin-right: 15px;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Conteneur principal */
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 5px;
+}
+
+/* Titres */
+h1, h2, h3 {
+  color: #444;
+}
+
+/* Formulaires */
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+form input[type="email"],
+form input[type="number"],
+form input[type="text"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+form button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #555;
+}
+
+/* Messages flash */
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.flashes li {
+  background-color: #e74c3c;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+/* Tableaux */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #333;
+  color: #fff;
+}

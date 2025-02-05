@@ -1,15 +1,11 @@
-# app/server.py
-
 from flask import Flask, render_template, request, redirect, flash, url_for
-from app.booking_manager import BookingManager
+from app.booking_manager import BookingService
 
-# Indique que le dossier statique se trouve dans ../static (à la racine du projet)
-# Les templates seront recherchés par défaut dans "templates" situé dans ce même dossier (ici "app/templates")
 app = Flask(__name__, static_folder="../static")
 app.secret_key = "secret_key_xyz"
 
-# Instanciation du manager avec les chemins de fichiers en paramètre
-manager = BookingManager(
+# Instanciation du service de réservation
+booking_service = BookingService(
     clubs_file="data/clubs.json",
     competitions_file="data/competitions.json"
 )
@@ -23,17 +19,18 @@ def index():
 @app.route("/showSummary", methods=["POST"])
 def show_summary():
     email = request.form.get("email", "")
-    club = manager.find_club_by_email(email)
+    club = booking_service.club_manager.find_by_email(email)
     if not club:
         flash("Email inconnu ou invalide.")
         return redirect(url_for("index"))
-    return render_template("welcome.html", club=club, competitions=manager.competitions)
+    return render_template("welcome.html", club=club, competitions=booking_service.competition_manager.competitions)
 
 
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
-    found_competition = manager.find_competition_by_name(competition)
-    found_club = manager.find_club_by_name(club)
+    found_competition = booking_service.competition_manager.find_by_name(
+        competition)
+    found_club = booking_service.club_manager.find_by_name(club)
     if not found_competition or not found_club:
         flash("Something went wrong - please try again")
         return redirect(url_for("index"))
@@ -51,20 +48,20 @@ def purchase_places():
         flash("Le nombre de places est invalide.")
         return redirect(url_for("index"))
 
-    success = manager.purchase_places(
+    success = booking_service.purchase_places(
         club_name, competition_name, places_requested)
     if success:
         flash("Great-booking complete!")
     else:
         flash("Impossible de réserver ces places (Règle non respectée).")
 
-    club = manager.find_club_by_name(club_name)
-    return render_template("welcome.html", club=club, competitions=manager.competitions)
+    club = booking_service.club_manager.find_by_name(club_name)
+    return render_template("welcome.html", club=club, competitions=booking_service.competition_manager.competitions)
 
 
 @app.route("/clubsPoints")
 def clubs_points():
-    return render_template("clubs_points.html", clubs=manager.clubs)
+    return render_template("clubs_points.html", clubs=booking_service.club_manager.clubs)
 
 
 @app.route("/logout")
