@@ -10,10 +10,9 @@
   <nav>
     <ul>
       {% if club_email %}
-        <!-- Si connecté, 'Accueil' renvoie à showSummary, en POST on a besoin d'un form ou un GET param -->
+        <!-- Si connecté, 'Accueil' renvoie à show_summary, en POST -->
         <li>
           <form action="{{ url_for('show_summary') }}" method="POST" style="display: inline;">
-
             <input type="hidden" name="email" value="{{ club_email }}">
             <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">
               Accueil
