@@ -1,4 +1,3 @@
-<!-- app/templates/base.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,11 +9,25 @@
 <body>
   <nav>
     <ul>
-      <li><a href="{{ url_for('index') }}">Accueil</a></li>
+      {% if club_email %}
+        <!-- Si connecté, 'Accueil' renvoie à showSummary, en POST on a besoin d'un form ou un GET param -->
+        <li>
+          <form action="{{ url_for('show_summary') }}" method="POST" style="display: inline;">
+
+            <input type="hidden" name="email" value="{{ club_email }}">
+            <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">
+              Accueil
+            </button>
+          </form>
+        </li>
+      {% else %}
+        <li><a href="{{ url_for('index') }}">Accueil</a></li>
+      {% endif %}
       <li><a href="{{ url_for('clubs_points') }}">Points Clubs</a></li>
       <li><a href="{{ url_for('logout') }}">Déconnexion</a></li>
     </ul>
   </nav>
+
   <div class="container">
     {% with messages = get_flashed_messages() %}
       {% if messages %}

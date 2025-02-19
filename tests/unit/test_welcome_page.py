@@ -1,5 +1,3 @@
-# tests/unit/test_welcome_page.py
-
 import unittest
 from app.server import app
 

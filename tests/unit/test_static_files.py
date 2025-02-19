@@ -1,5 +1,3 @@
-# tests/unit/test_static_files.py
-
 import unittest
 from app.server import app
 

@@ -1,5 +1,3 @@
-# tests/unit/test_points_display.py
-
 import unittest
 from app.server import app
 
@@ -13,7 +11,7 @@ class TestPointsDisplay(unittest.TestCase):
         """Vérifie que la page d'accueil contient un indice sur l'affichage des points."""
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        # Par exemple, vérifier que le lien vers "Points Clubs" est présent
+        # Vérifie qu'un lien "Points Clubs" est présent
         self.assertIn(b"Points Clubs", response.data)
 
     def test_points_display_on_welcome(self):

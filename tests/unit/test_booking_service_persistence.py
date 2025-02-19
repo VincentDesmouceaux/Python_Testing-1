@@ -1,5 +1,3 @@
-# tests/unit/test_booking_service_persistence.py
-
 import unittest
 import os
 import json
@@ -101,9 +99,7 @@ class TestBookingServicePersistence(unittest.TestCase):
         self.assertIsNotNone(
             iron_club, "Les données du club 'Iron Temple' doivent être présentes.")
         self.assertEqual(
-            iron_club["points"], "1",
-            "Les points doivent être mis à jour (4 - 3 = 1)."
-        )
+            iron_club["points"], "1", "Les points doivent être mis à jour (4 - 3 = 1).")
 
         # Vérification du fichier JSON des compétitions
         with open(self.test_competitions_file, "r") as f:
@@ -115,13 +111,9 @@ class TestBookingServicePersistence(unittest.TestCase):
             None
         )
         self.assertIsNotNone(
-            spring_comp,
-            "Les données de 'Spring Festival' doivent être présentes."
-        )
-        self.assertEqual(
-            spring_comp["numberOfPlaces"], "22",
-            "Les places doivent être mises à jour (25 - 3 = 22)."
-        )
+            spring_comp, "Les données de 'Spring Festival' doivent être présentes.")
+        self.assertEqual(spring_comp["numberOfPlaces"], "22",
+                         "Les places doivent être mises à jour (25 - 3 = 22).")
 
 
 if __name__ == '__main__':

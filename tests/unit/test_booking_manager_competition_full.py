@@ -1,5 +1,3 @@
-# tests/unit/test_booking_manager_competition_full.py
-
 import unittest
 from app.booking_manager.booking_service import BookingService
 
@@ -7,7 +5,9 @@ from app.booking_manager.booking_service import BookingService
 class TestBookingManagerCompetitionFull(unittest.TestCase):
     def setUp(self):
         self.service = BookingService(
-            clubs_file="data/clubs.json", competitions_file="data/competitions.json")
+            clubs_file="data/clubs.json",
+            competitions_file="data/competitions.json"
+        )
 
     def test_purchase_places_competition_full(self):
         competition = self.service.competition_manager.find_by_name(

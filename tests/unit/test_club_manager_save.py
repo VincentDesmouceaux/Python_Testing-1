@@ -1,5 +1,3 @@
-# tests/unit/test_club_manager_save.py
-
 import unittest
 import os
 import json
