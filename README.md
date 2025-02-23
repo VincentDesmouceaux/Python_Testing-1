@@ -106,6 +106,27 @@
    - **Deactivate virtual environment**:
     
      deactivate
+7. **Code Quality (Flake8)**
+
+   To check code style and generate an HTML report:
+
+   1. Install Flake8 and flake8-html:
+      
+      pip install flake8 flake8-html
+      
+   2. Run Flake8 with HTML output:
+      
+      flake8 --format=html --htmldir=flake8_report
+      
+      This will create a folder `flake8_report/` containing an `index.html` file.
+
+   3. Open `flake8_report/index.html` in your browser to view the linting results.
+
+   4. Remember to update your `requirements.txt` if you install new packages:
+      
+      pip freeze > requirements.txt
+    
+      
     
 
 

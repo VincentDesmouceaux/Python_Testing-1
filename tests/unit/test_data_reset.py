@@ -4,7 +4,6 @@ assurant qu'on peut restaurer l'état initial après modifications.
 """
 
 import unittest
-import os
 import shutil
 from app.booking_manager.club_manager import ClubManager
 from app.booking_manager.competition_manager import CompetitionManager
