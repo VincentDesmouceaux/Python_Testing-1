@@ -1,3 +1,5 @@
+# tests/unit/test_points_display.py
+
 import unittest
 from app.server import app
 
@@ -8,18 +10,25 @@ class TestPointsDisplay(unittest.TestCase):
         self.client = app.test_client()
 
     def test_points_display_on_index(self):
-        """Vérifie que la page d'accueil contient un indice sur l'affichage des points."""
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        # Vérifie qu'un lien "Points Clubs" est présent
         self.assertIn(b"Points Clubs", response.data)
 
     def test_points_display_on_welcome(self):
-        """Vérifie que la page welcome affiche les points après connexion."""
         response = self.client.post(
             "/showSummary", data={"email": "admin@irontemple.com"}, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Points disponibles", response.data)
+
+    def test_clubs_points_route(self):
+        """
+        Vérifie GET /clubsPoints (200 OK, contient liste des clubs).
+        """
+        response = self.client.get("/clubsPoints")
+        self.assertEqual(response.status_code, 200,
+                         "/clubsPoints doit être accessible en GET.")
+        self.assertIn(b"Points des Clubs", response.data,
+                      "Doit afficher le titre 'Points des Clubs'.")
 
 
 if __name__ == '__main__':
