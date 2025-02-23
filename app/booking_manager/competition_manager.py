@@ -1,4 +1,7 @@
-# app/booking_manager/competition_manager.py
+"""
+Gère le chargement et la sauvegarde des compétitions depuis un fichier JSON,
+ainsi que la recherche par nom.
+"""
 
 import json
 import os
@@ -10,16 +13,24 @@ from .data_loader import JSONDataLoader
 
 class CompetitionManager:
     """
-    Gère le chargement, la recherche et la sauvegarde des compétitions.
+    Gère la logique CRUD (en lecture/sauvegarde) pour les compétitions.
     """
 
     def __init__(self, competitions_file: str):
-        self.competitions_file = competitions_file  # Fichier "de travail"
+        """
+        Initialise le manager avec un fichier JSON spécifié (competitions_file).
+        Charge immédiatement les données dans self.competitions.
+        """
+        self.competitions_file = competitions_file
         self.loader = JSONDataLoader(competitions_file)
         data = self.loader.load_data()
         self.competitions: List[Competition] = self._parse_competitions(data)
 
     def _parse_competitions(self, data: dict) -> List[Competition]:
+        """
+        Convertit le dictionnaire `data` (clé 'competitions')
+        en une liste d'objets Competition.
+        """
         competitions = []
         for c in data.get("competitions", []):
             competitions.append(
@@ -32,11 +43,14 @@ class CompetitionManager:
         return competitions
 
     def find_by_name(self, name: str) -> Optional[Competition]:
+        """
+        Retourne la compétition portant le nom 'name', ou None si introuvable.
+        """
         return next((comp for comp in self.competitions if comp.name == name), None)
 
     def save_competitions(self, filepath: Optional[str] = None) -> None:
         """
-        Sauvegarde l'état actuel des compétitions dans un fichier JSON.
+        Sauvegarde les compétitions actuelles dans un fichier JSON (par défaut self.competitions_file).
         """
         if filepath is None:
             filepath = self.competitions_file
@@ -53,16 +67,16 @@ class CompetitionManager:
 
     def reset_data(self, fresh_filepath: str) -> None:
         """
-        Copie le fichier fresh_filepath dans self.competitions_file,
-        puis recharge les competitions en mémoire.
+        Copie le fichier fresh_filepath (contenant l'état initial)
+        vers self.competitions_file, puis recharge en mémoire.
         """
         if not os.path.exists(fresh_filepath):
             raise FileNotFoundError(
                 f"Fichier source introuvable : {fresh_filepath}")
 
-        # 1. Copie fresh_filepath => self.competitions_file
+        # Écrase le fichier de travail par le fichier 'frais'
         shutil.copy(fresh_filepath, self.competitions_file)
 
-        # 2. Recharge en mémoire
-        data = self.loader.load_data()  # relit le fichier de travail
+        # Recharge en mémoire
+        data = self.loader.load_data()
         self.competitions = self._parse_competitions(data)

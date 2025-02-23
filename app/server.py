@@ -1,12 +1,20 @@
-# app/server.py
+"""
+Ce module définit la logique de routes Flask pour l'application GUDLFT.
+
+Il utilise une instance de `BookingService` pour gérer l'achat de places,
+et s'appuie sur des templates Jinja2 pour l'affichage (welcome.html, booking.html, etc.).
+"""
 
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 from app.booking_manager import BookingService
 
+# Instancie l'application Flask
+# `static_folder` pointe vers ../static pour le CSS, etc.
 app = Flask(__name__, static_folder="../static")
+# Clé secrète pour les messages flash et la session
 app.secret_key = "secret_key_xyz"
 
-# Instanciation du service de réservation
+# Crée le service de réservation, en lisant les fichiers JSON par défaut.
 booking_service = BookingService(
     clubs_file="data/clubs.json",
     competitions_file="data/competitions.json"
@@ -16,8 +24,8 @@ booking_service = BookingService(
 @app.context_processor
 def inject_club_email():
     """
-    Permet d'accéder à session['club_email'] dans les templates,
-    afin de savoir si un utilisateur est connecté.
+    Ajoute à chaque template une variable `club_email` correspondant
+    à la session en cours, afin de savoir si un utilisateur est connecté.
     """
     return dict(club_email=session.get('club_email'))
 
@@ -25,7 +33,8 @@ def inject_club_email():
 @app.route("/")
 def index():
     """
-    Page d'accueil.
+    Page d'accueil du site. Affiche un formulaire de connexion
+    (voir template index.html).
     """
     return render_template("index.html")
 
@@ -33,8 +42,10 @@ def index():
 @app.route("/showSummary", methods=["POST"])
 def show_summary():
     """
-    Récupère l'email du club et affiche la page de résumé (welcome.html).
-    Si le club n'est pas trouvé, on redirige avec un message d'erreur.
+    Reçoit l'email d'un club (depuis index.html) en POST.
+    Si l'email existe, on stocke `club_email` en session, puis on affiche
+    la page `welcome.html` avec la liste des compétitions.
+    Sinon, on redirige vers l'index en flashant un message d'erreur.
     """
     email = request.form.get("email", "")
     club = booking_service.club_manager.find_by_email(email)
@@ -50,7 +61,8 @@ def show_summary():
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
     """
-    Affiche la page de réservation (booking.html) pour un club/compétition donné.
+    Affiche la page de réservation (booking.html) pour un club et une compétition donnés.
+    - Si le club ou la compétition n'existent pas, on renvoie un message d'erreur + redirection.
     """
     found_competition = booking_service.competition_manager.find_by_name(
         competition)
@@ -65,9 +77,12 @@ def book(competition, club):
 @app.route("/purchasePlaces", methods=["POST"])
 def purchase_places():
     """
-    Tente d'acheter 'places' places pour un club et une compétition.
-    Après avoir flashé un message de succès ou d'erreur,
-    on redirige vers /showPurchaseResult/<club_name> pour afficher la page finale.
+    Tente d'acheter 'places' places pour le club donné dans une compétition.
+    - Récupère `competition`, `club`, `places` depuis le formulaire.
+    - Convertit `places` en int (sinon ValueError => flash + redirection).
+    - Si la réservation réussit : flash "Great-booking complete!"
+    - Sinon : flash un message d'erreur selon la situation.
+    - Redirige vers `show_purchase_result(<club_name>)`.
     """
     competition_name = request.form.get("competition")
     club_name = request.form.get("club")
@@ -87,7 +102,7 @@ def purchase_places():
         flash("Something went wrong - please try again.")
         return redirect(url_for("index"))
 
-    # Logique de réservation
+    # Logique métier : max 12 places, points dispo, places disponibles, etc.
     if places_requested > 12:
         flash("Vous ne pouvez pas réserver plus de 12 places.")
         success = False
@@ -99,17 +114,19 @@ def purchase_places():
         flash(
             f"Great-booking complete! Vous avez réservé {places_requested} places.")
     else:
+        # Si places_requested <= 12 mais échec => pas assez de points ou places
         if places_requested <= 12:
             flash("Le concours est complet ou vous n'avez pas assez de points.")
 
-    # Redirection vers la route qui affiche le résultat
     return redirect(url_for("show_purchase_result", club_name=club_name))
 
 
 @app.route("/showPurchaseResult/<club_name>")
 def show_purchase_result(club_name):
     """
-    Affiche la page welcome.html, lit le message flash si besoin.
+    Affiche la page `welcome.html` après la réservation, 
+    en relisant les données du club (mis à jour) et la liste des compétitions.
+    Le message flash (succès ou échec) est montré à l'utilisateur.
     """
     updated_club = booking_service.club_manager.find_by_name(club_name)
     competitions = booking_service.competition_manager.competitions
@@ -119,7 +136,8 @@ def show_purchase_result(club_name):
 @app.route("/clubsPoints")
 def clubs_points():
     """
-    Liste des clubs et leurs points.
+    Affiche la liste des clubs et leurs points dans `clubs_points.html`.
+    Page accessible sans authentification (transparence).
     """
     clubs = booking_service.club_manager.clubs
     return render_template("clubs_points.html", clubs=clubs)
@@ -128,7 +146,8 @@ def clubs_points():
 @app.route("/logout")
 def logout():
     """
-    Déconnecte le club.
+    Déconnecte le club (supprime 'club_email' de la session),
+    puis redirige vers la page d'accueil.
     """
     session.pop('club_email', None)
     return redirect(url_for("index"))

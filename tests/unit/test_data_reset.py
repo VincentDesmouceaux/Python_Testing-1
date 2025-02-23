@@ -1,4 +1,7 @@
-# tests/unit/test_data_reset.py
+"""
+Teste la fonctionnalité reset_data() des ClubManager et CompetitionManager,
+assurant qu'on peut restaurer l'état initial après modifications.
+"""
 
 import unittest
 import os
@@ -8,20 +11,22 @@ from app.booking_manager.competition_manager import CompetitionManager
 
 
 class TestDataReset(unittest.TestCase):
+    """
+    Classe de tests vérifiant que la réinitialisation des données
+    (reset_data) fonctionne correctement pour Clubs et Competitions.
+    """
 
     def setUp(self):
-        # Chemins vers vos fichiers "de travail"
+        """
+        Copie les fichiers *fresh*.json vers clubs.json / competitions.json
+        afin de partir d'un état "frais". Puis instancie les managers.
+        """
         self.clubs_file = "data/clubs.json"
         self.competitions_file = "data/competitions.json"
 
-        # Chemins vers des fichiers "frais" (après clonage)
         self.fresh_clubs = "data/fresh_clubs.json"
         self.fresh_competitions = "data/fresh_competitions.json"
 
-        # On suppose que fresh_clubs.json / fresh_competitions.json existent déjà
-        # et contiennent l'état initial (points=34 etc.)
-
-        # S'assurer de partir sur un état connu
         shutil.copy(self.fresh_clubs, self.clubs_file)
         shutil.copy(self.fresh_competitions, self.competitions_file)
 
@@ -29,51 +34,59 @@ class TestDataReset(unittest.TestCase):
         self.competition_manager = CompetitionManager(self.competitions_file)
 
     def tearDown(self):
-        # (optionnel) remettre fresh ou faire rien
+        """
+        Optionnel : on pourrait recopier les fresh*.json,
+        mais ici on n'y touche pas.
+        """
         pass
 
     def test_reset_data(self):
         """
-        Vérifie qu'après une modification, reset_data() restaure l'état initial.
+        Vérifie qu'après avoir modifié un club/compétition,
+        on peut appeler reset_data() pour retrouver l'état initial.
         """
         # 1) On modifie un club
         club = self.club_manager.find_by_name("Iron Temple")
         self.assertIsNotNone(club)
-        club.points = 0  # On simule un usage
-
-        # 2) Sauvegarder
+        club.points = 0
         self.club_manager.save_clubs()
 
-        # 3) Vérifie qu'il a bien 0 points
+        # 2) Vérifie que le fichier contient 0 points
         manager_check = ClubManager(self.clubs_file)
         updated_club = manager_check.find_by_name("Iron Temple")
         self.assertEqual(updated_club.points, 0)
 
-        # 4) On appelle reset_data
+        # 3) On appelle reset_data sur le club_manager
         self.club_manager.reset_data(self.fresh_clubs)
-
-        # 5) Vérifie que c'est revenu à l'état frais (34 par exemple)
         club_after_reset = self.club_manager.find_by_name("Iron Temple")
-        self.assertEqual(club_after_reset.points, 34,
-                         "Le club doit retrouver ses points initiaux.")
+        self.assertEqual(
+            club_after_reset.points,
+            34,
+            "Le club doit retrouver ses 34 points initiaux."
+        )
 
-        # Pareil pour les compétitions
+        # Pareil pour la compétition
         comp = self.competition_manager.find_by_name("Spring Festival")
         self.assertIsNotNone(comp)
         comp.number_of_places = 10
         self.competition_manager.save_competitions()
 
-        # re-load pour vérifier
         manager_check_comp = CompetitionManager(self.competitions_file)
-        self.assertEqual(manager_check_comp.find_by_name(
-            "Spring Festival").number_of_places, 10)
+        self.assertEqual(
+            manager_check_comp.find_by_name(
+                "Spring Festival").number_of_places,
+            10
+        )
 
-        # reset
+        # Reset
         self.competition_manager.reset_data(self.fresh_competitions)
         comp_after_reset = self.competition_manager.find_by_name(
             "Spring Festival")
-        self.assertEqual(comp_after_reset.number_of_places, 39,
-                         "La compétition doit retrouver ses places initiales (39).")
+        self.assertEqual(
+            comp_after_reset.number_of_places,
+            39,
+            "La compétition doit retrouver ses 39 places initiales."
+        )
 
 
 if __name__ == "__main__":

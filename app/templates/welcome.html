@@ -1,11 +1,12 @@
-<!-- app/templates/welcome.html -->
 {% extends "base.html" %}
 
 {% block title %}Résumé | GUDLFT Registration{% endblock %}
 
 {% block content %}
+  <!-- Page de résumé / vue d'accueil après connexion -->
   <h2>Welcome, {{ club['email'] }}</h2>
   <p>Points disponibles: {{ club['points'] }}</p>
+
   <h3>Compétitions :</h3>
   <ul>
     {% for comp in competitions %}
@@ -13,6 +14,7 @@
         {{ comp['name'] }}<br />
         Date: {{ comp['date'] }}<br />
         Places disponibles: {{ comp['number_of_places'] }}<br />
+        <!-- Lien vers /book/<comp>/<club> -->
         <a href="{{ url_for('book', competition=comp['name'], club=club['name']) }}">Réserver</a>
       </li>
       <hr />

@@ -1,4 +1,7 @@
-# app/booking_manager/club_manager.py
+"""
+Gère le chargement/sauvegarde des clubs depuis un fichier JSON,
+ainsi que la recherche par email ou nom.
+"""
 
 import json
 import os
@@ -10,16 +13,22 @@ from .data_loader import JSONDataLoader
 
 class ClubManager:
     """
-    Gère le chargement, la recherche et la sauvegarde des clubs.
+    Gère la logique CRUD pour les clubs (lecture, sauvegarde, reset).
     """
 
     def __init__(self, clubs_file: str):
-        self.clubs_file = clubs_file  # Fichier "de travail"
+        """
+        Initialise le manager avec un fichier JSON. Charge tout de suite dans self.clubs.
+        """
+        self.clubs_file = clubs_file
         self.loader = JSONDataLoader(clubs_file)
         data = self.loader.load_data()
         self.clubs: List[Club] = self._parse_clubs(data)
 
     def _parse_clubs(self, data: dict) -> List[Club]:
+        """
+        Transforme le dictionnaire en liste d'objets Club.
+        """
         clubs = []
         for c in data.get("clubs", []):
             clubs.append(
@@ -33,14 +42,20 @@ class ClubManager:
         return clubs
 
     def find_by_email(self, email: str) -> Optional[Club]:
+        """
+        Retourne un club dont l'email correspond, ou None si introuvable.
+        """
         return next((club for club in self.clubs if club.email == email), None)
 
     def find_by_name(self, name: str) -> Optional[Club]:
+        """
+        Retourne un club dont le nom correspond, ou None si introuvable.
+        """
         return next((club for club in self.clubs if club.name == name), None)
 
     def save_clubs(self, filepath: Optional[str] = None) -> None:
         """
-        Sauvegarde l'état actuel des clubs dans un fichier JSON.
+        Sauvegarde la liste des clubs dans un fichier JSON (ou self.clubs_file).
         """
         if filepath is None:
             filepath = self.clubs_file
@@ -58,16 +73,13 @@ class ClubManager:
 
     def reset_data(self, fresh_filepath: str) -> None:
         """
-        Copie le fichier fresh_filepath dans self.clubs_file,
-        puis recharge la liste des clubs en mémoire.
+        Restaure les données initiales (fichier fresh_filepath)
+        dans self.clubs_file, puis recharge en mémoire.
         """
         if not os.path.exists(fresh_filepath):
             raise FileNotFoundError(
                 f"Fichier source introuvable : {fresh_filepath}")
 
-        # 1. Copie fresh_filepath => self.clubs_file
         shutil.copy(fresh_filepath, self.clubs_file)
-
-        # 2. Recharge en mémoire
         data = self.loader.load_data()
         self.clubs = self._parse_clubs(data)

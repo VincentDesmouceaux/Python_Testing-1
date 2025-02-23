@@ -4,13 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}GUDLFT{% endblock %}</title>
+  <!-- Fichier CSS principal -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <nav>
     <ul>
       {% if club_email %}
-        <!-- Si connecté, 'Accueil' renvoie à show_summary, en POST -->
+        <!-- Si l'utilisateur est connecté (club_email en session),
+             on affiche un formulaire qui renvoie sur /showSummary en POST,
+             afin de simuler un "Accueil" sans perdre la session. -->
         <li>
           <form action="{{ url_for('show_summary') }}" method="POST" style="display: inline;">
             <input type="hidden" name="email" value="{{ club_email }}">
@@ -20,6 +23,7 @@
           </form>
         </li>
       {% else %}
+        <!-- Si pas connecté, lien simple vers / -->
         <li><a href="{{ url_for('index') }}">Accueil</a></li>
       {% endif %}
       <li><a href="{{ url_for('clubs_points') }}">Points Clubs</a></li>
@@ -28,6 +32,7 @@
   </nav>
 
   <div class="container">
+    <!-- Affichage des messages flash (erreurs, succès) -->
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class="flashes">
@@ -37,6 +42,7 @@
         </ul>
       {% endif %}
     {% endwith %}
+
     {% block content %}{% endblock %}
   </div>
 </body>
