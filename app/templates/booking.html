@@ -11,6 +11,7 @@
     <input type="hidden" name="competition" value="{{ competition['name'] }}">
     <label for="places">Combien de places ?</label>
     <input type="number" name="places" id="places" min="1" required>
-    <button type="submit">Réserver</button>
+    <!-- Ajout d'un id -->
+    <button id="submit-booking" type="submit">Réserver</button>
   </form>
 {% endblock %}

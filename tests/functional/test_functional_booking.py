@@ -1,9 +1,10 @@
 # tests/functional/test_functional_booking.py
 
 import unittest
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class TestFunctionalBooking(unittest.TestCase):
@@ -19,30 +20,28 @@ class TestFunctionalBooking(unittest.TestCase):
         driver = self.driver
         driver.get(self.base_url)
 
-        # Saisir l'email et cliquer
+        # 1) Saisir l'email -> Se connecter
         email_input = driver.find_element(By.ID, "email")
         email_input.send_keys("admin@irontemple.com")
-        submit_button = driver.find_element(
-            By.CSS_SELECTOR, "button[type='submit']")
-        submit_button.click()
+        driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 
-        # Cliquer sur "Réserver" (Spring Festival)
+        # 2) welcome.html => "Réserver" (Spring Festival)
         link = driver.find_element(By.LINK_TEXT, "Réserver")
         link.click()
 
-        # Saisir 3 places
+        # 3) booking.html => Saisir 3 places
         places_input = driver.find_element(By.ID, "places")
         places_input.send_keys("3")
-        book_button = driver.find_element(
-            By.CSS_SELECTOR, "button[type='submit']")
-        book_button.click()
+        # Désormais on clique spécifiquement le bouton id="submit-booking"
+        driver.find_element(By.ID, "submit-booking").click()
 
-        # Attendre la redirection
-        time.sleep(1)
+        # 4) Attente explicite d'apparition du flash
+        wait = WebDriverWait(driver, 5)
+        wait.until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, ".flashes")))
 
-        # Vérifier "great-booking complete!"
+        # 5) Vérification
         body_text = driver.find_element(By.TAG_NAME, "body").text.lower()
-        print("DEBUG body_text:\n", body_text)
         self.assertIn("great-booking complete!", body_text)
 
 
