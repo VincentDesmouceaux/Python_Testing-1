@@ -1,6 +1,8 @@
 # app/booking_manager/club_manager.py
 
 import json
+import os
+import shutil
 from typing import List, Optional
 from app.models import Club
 from .data_loader import JSONDataLoader
@@ -12,9 +14,9 @@ class ClubManager:
     """
 
     def __init__(self, clubs_file: str):
-        self.clubs_file = clubs_file  # Pour la sauvegarde
-        loader = JSONDataLoader(clubs_file)
-        data = loader.load_data()
+        self.clubs_file = clubs_file  # Fichier "de travail"
+        self.loader = JSONDataLoader(clubs_file)
+        data = self.loader.load_data()
         self.clubs: List[Club] = self._parse_clubs(data)
 
     def _parse_clubs(self, data: dict) -> List[Club]:
@@ -53,3 +55,19 @@ class ClubManager:
             clubs_data["clubs"].append(club_dict)
         with open(filepath, "w") as f:
             json.dump(clubs_data, f, indent=4)
+
+    def reset_data(self, fresh_filepath: str) -> None:
+        """
+        Copie le fichier fresh_filepath dans self.clubs_file,
+        puis recharge la liste des clubs en mémoire.
+        """
+        if not os.path.exists(fresh_filepath):
+            raise FileNotFoundError(
+                f"Fichier source introuvable : {fresh_filepath}")
+
+        # 1. Copie fresh_filepath => self.clubs_file
+        shutil.copy(fresh_filepath, self.clubs_file)
+
+        # 2. Recharge en mémoire
+        data = self.loader.load_data()
+        self.clubs = self._parse_clubs(data)

@@ -1,6 +1,8 @@
 # app/booking_manager/competition_manager.py
 
 import json
+import os
+import shutil
 from typing import List, Optional
 from app.models import Competition
 from .data_loader import JSONDataLoader
@@ -12,9 +14,9 @@ class CompetitionManager:
     """
 
     def __init__(self, competitions_file: str):
-        self.competitions_file = competitions_file  # Pour la sauvegarde
-        loader = JSONDataLoader(competitions_file)
-        data = loader.load_data()
+        self.competitions_file = competitions_file  # Fichier "de travail"
+        self.loader = JSONDataLoader(competitions_file)
+        data = self.loader.load_data()
         self.competitions: List[Competition] = self._parse_competitions(data)
 
     def _parse_competitions(self, data: dict) -> List[Competition]:
@@ -48,3 +50,19 @@ class CompetitionManager:
             competitions_data["competitions"].append(comp_dict)
         with open(filepath, "w") as f:
             json.dump(competitions_data, f, indent=4)
+
+    def reset_data(self, fresh_filepath: str) -> None:
+        """
+        Copie le fichier fresh_filepath dans self.competitions_file,
+        puis recharge les competitions en mémoire.
+        """
+        if not os.path.exists(fresh_filepath):
+            raise FileNotFoundError(
+                f"Fichier source introuvable : {fresh_filepath}")
+
+        # 1. Copie fresh_filepath => self.competitions_file
+        shutil.copy(fresh_filepath, self.competitions_file)
+
+        # 2. Recharge en mémoire
+        data = self.loader.load_data()  # relit le fichier de travail
+        self.competitions = self._parse_competitions(data)
