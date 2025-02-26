@@ -17,6 +17,7 @@ exclude =
     staticfiles/*,
     node_modules/*
     lib/
+    .__init__.py
 ignore = E501, W503, W504, W291
 format = html
 htmldir = flake8-report

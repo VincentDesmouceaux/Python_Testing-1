@@ -21,12 +21,16 @@
    - After cloning, change into the directory and type:
      ```bash
      virtualenv .
+     python -m venv env
+     
+
      ```
      This will then set up a virtual python environment within that directory.
 
    - Next, type:
      ```bash
      source bin/activate
+     source env/bin/activate
      ```
      You should see that your command prompt has changed to the name of the folder.  
      This means that you can install packages in here without affecting files outside.  
@@ -51,6 +55,7 @@
      In the directory, type either:
      ```bash
      flask run
+     pip install python-dotenv
      ```
      or
      ```bash
@@ -88,12 +93,16 @@
    - **Run all unittests** (discovery mode, looks in `tests/` folder):
      
      python -m unittest discover -s tests
+     pip install selenium
+
      
 
    - **Run tests with coverage**:
      
      coverage run -m unittest discover -s tests
      coverage report -m
+     coverage html
+
      
      This will show a summary of code coverage for all tested files.
 
