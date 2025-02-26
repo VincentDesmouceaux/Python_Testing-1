@@ -16,3 +16,7 @@ media/
 .DS_Store
 .envrc
 __pycache__
+.coverage
+CACHEDIR.TAG
+launch.json
+pyvenv.cfg
